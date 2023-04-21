@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 });
 app.get('/films', (req, res) => {
     try {
-        res.setHeader("Content-Type", 'application/json');
+        res.setHeader('Content-Type', 'application/json');
         res.writeHead(200);
         res.end(JSON.stringify(films_json_1.default));
     }
@@ -53,11 +53,11 @@ app.get('/films', (req, res) => {
     }
 });
 app.get('/films/:id', (req, res) => {
-    const filteredFilm = films_json_1.default.find(film => film.film_id === parseFloat(req.params.id));
+    const filteredFilm = films_json_1.default.find((film) => film.film_id === parseFloat(req.params.id));
     if (filteredFilm === undefined) {
         res.status(500).send('Unable to find film from ID');
     }
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify(filteredFilm));
 });
@@ -67,12 +67,12 @@ app.get('/topFive', (req, res) => {
         'Uncut Gems',
         'Stalker',
         'Casino',
-        'Fear and Loathing in Las Vegas'
+        'Fear and Loathing in Las Vegas',
     ];
     const collection = [];
     try {
         for (const title of topFive) {
-            const retrieve = films_json_1.default.find(film => film.title === title);
+            const retrieve = films_json_1.default.find((film) => film.title === title);
             if (retrieve === undefined)
                 return null;
             collection.push(retrieve);
@@ -85,8 +85,8 @@ app.get('/topFive', (req, res) => {
 });
 app.get('/genres', (req, res) => {
     const genreCollection = [];
-    films_json_1.default.forEach(film => {
-        film.genre.forEach(genre => {
+    films_json_1.default.forEach((film) => {
+        film.genre.forEach((genre) => {
             if (!genreCollection.includes(genre)) {
                 genreCollection.push(genre);
             }
@@ -96,30 +96,30 @@ app.get('/genres', (req, res) => {
 });
 app.get('/artists', (req, res) => {
     const listOfArtists = [];
-    films_json_1.default.forEach(film => {
+    films_json_1.default.forEach((film) => {
         listOfArtists.push(film.director);
-        film.writers.forEach(writer => listOfArtists.push(writer));
-        film.cinematography.forEach(cinematographer => listOfArtists.push(cinematographer));
-        film.soundtrack.forEach(musician => listOfArtists.push(musician));
-        film.notable_actors.forEach(actor => listOfArtists.push(actor));
+        film.writers.forEach((writer) => listOfArtists.push(writer));
+        film.cinematography.forEach((cinematographer) => listOfArtists.push(cinematographer));
+        film.soundtrack.forEach((musician) => listOfArtists.push(musician));
+        film.notable_actors.forEach((actor) => listOfArtists.push(actor));
     });
     const filteredUniqueArtists = [...new Set(listOfArtists)];
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify(filteredUniqueArtists));
 });
 app.get('/categories', (req, res) => {
     const categoryCollection = [];
-    films_json_1.default.forEach(film => {
-        film.special_category.forEach(category => categoryCollection.push(category));
+    films_json_1.default.forEach((film) => {
+        film.special_category.forEach((category) => categoryCollection.push(category));
     });
     const filteredUniqueCategories = [...new Set(categoryCollection)];
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify(filteredUniqueCategories));
 });
 const capitaliseNames = (arr) => {
-    return arr.map(name => {
+    return arr.map((name) => {
         const capitalisedFirst = name.charAt(0).toUpperCase();
         const rest = name.slice(1).toLowerCase();
         return capitalisedFirst + rest;
@@ -127,36 +127,36 @@ const capitaliseNames = (arr) => {
 };
 app.get('/artist/:artist', (req, res) => {
     const artistCollection = [];
-    const artist = (capitaliseNames((req.params.artist).split(' '))).join(' ');
+    const artist = capitaliseNames(req.params.artist.split(' ')).join(' ');
     if (!artist)
         res.status(404).send('No films associated to that artist');
-    films_json_1.default.forEach(film => {
+    films_json_1.default.forEach((film) => {
         if (film.director === artist) {
             artistCollection.push(film);
         }
-        film.writers.forEach(writer => {
+        film.writers.forEach((writer) => {
             if (writer === artist) {
                 artistCollection.push(film);
             }
         });
-        film.cinematography.forEach(cinematographer => {
+        film.cinematography.forEach((cinematographer) => {
             if (cinematographer === artist) {
                 artistCollection.push(film);
             }
         });
-        film.soundtrack.forEach(musician => {
+        film.soundtrack.forEach((musician) => {
             if (musician === artist) {
                 artistCollection.push(film);
             }
         });
-        film.notable_actors.forEach(actor => {
+        film.notable_actors.forEach((actor) => {
             if (actor === artist) {
                 artistCollection.push(film);
             }
         });
     });
     const filteredUniqueArtistCollection = [...new Set(artistCollection)];
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify(filteredUniqueArtistCollection));
 });
@@ -166,28 +166,28 @@ app.get('/genres/:genre', (req, res) => {
     const restOfGenre = req.params.genre.slice(1);
     const genre = firstLetter + restOfGenre;
     const genreFilms = [];
-    films_json_1.default.forEach(film => {
-        film.genre.forEach(filmGenre => {
+    films_json_1.default.forEach((film) => {
+        film.genre.forEach((filmGenre) => {
             if (filmGenre === genre) {
                 genreFilms.push(film);
             }
         });
     });
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify(genreFilms));
 });
 app.get('/categories/:category', (req, res) => {
     const category = req.params.category;
     const categoryFilms = [];
-    films_json_1.default.forEach(film => {
-        film.special_category.forEach(specialCategory => {
+    films_json_1.default.forEach((film) => {
+        film.special_category.forEach((specialCategory) => {
             if (specialCategory === category) {
                 categoryFilms.push(film);
             }
         });
     });
-    res.setHeader("Content-Type", "application/json");
+    res.setHeader('Content-Type', 'application/json');
     res.writeHead(200);
     res.end(JSON.stringify(categoryFilms));
 });
@@ -197,9 +197,9 @@ app.get('/upvote/:filmId/:commentId', (req, res) => {
         let films = JSON.parse(JSONfile);
         const filmId = parseFloat(req.params.filmId);
         const commentId = parseFloat(req.params.commentId);
-        films.forEach(film => {
+        films.forEach((film) => {
             if (film.film_id === filmId) {
-                film.comments.forEach(comment => {
+                film.comments.forEach((comment) => {
                     if (comment._id === commentId) {
                         comment.upvotes++;
                     }
@@ -223,9 +223,9 @@ app.get('/downvote/:filmId/:commentId', (req, res) => {
         let films = JSON.parse(JSONfile);
         const filmId = parseFloat(req.params.filmId);
         const commentId = parseFloat(req.params.commentId);
-        films.forEach(film => {
+        films.forEach((film) => {
             if (film.film_id === filmId) {
-                film.comments.forEach(comment => {
+                film.comments.forEach((comment) => {
                     if (comment._id === commentId) {
                         comment.downvotes++;
                     }
