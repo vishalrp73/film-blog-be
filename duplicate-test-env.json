@@ -65,7 +65,7 @@
         "name": "Johnny",
         "comment_text": "cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt cunt",
         "timestamp": "2023-03-10T06:48:23.982Z",
-        "upvotes": 3,
+        "upvotes": 6,
         "downvotes": 0
       },
       {
@@ -73,15 +73,7 @@
         "name": "Bobby",
         "comment_text": "fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck fuck ",
         "timestamp": "2023-03-10T06:48:23.982Z",
-        "upvotes": 15,
-        "downvotes": 2
-      },
-      {
-        "_id": 76,
-        "name": "Jesus",
-        "comment_text": "fuck ass mcgee fuck ass mcgee fuck ass mcgee fuck ass mcgee fuck ass mcgee fuck ass mcgee fuck ass mcgee",
-        "timestamp": "2023-03-10T06:48:23.982Z",
-        "upvotes": 7,
+        "upvotes": 12,
         "downvotes": 0
       }
     ]
