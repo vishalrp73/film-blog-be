@@ -3,7 +3,6 @@ const dotenv = require('dotenv').config();
 const cors = require('cors');
 import db from './server/db/conn.js';
 import { routes } from './routes.js';
-import { MongoFilm } from './types.js';
 import {
   logRequest,
   getCollection,
@@ -56,7 +55,7 @@ app.get(`${routes.films}/:id`, (req: Request, res: Response) => {
         .toArray();
 
       if (film) {
-        res.send(film).status(200);
+        res.send(film[0]).status(200);
         return;
       }
 

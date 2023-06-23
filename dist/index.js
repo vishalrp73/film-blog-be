@@ -55,7 +55,7 @@ app.get(`${routes_js_1.routes.films}/:id`, (req, res) => {
             .find({ film_id: parseFloat(filmId) })
             .toArray();
         if (film) {
-            res.send(film).status(200);
+            res.send(film[0]).status(200);
             return;
         }
         res.send('Unable to find film').status(404);
