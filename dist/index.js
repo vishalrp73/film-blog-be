@@ -225,4 +225,79 @@ app.get(`${routes_js_1.routes.categories}/:category`, (req, res) => {
     }))
         .catch((err) => (0, methods_1.apiError)(err, res));
 });
+// Comment endpoints
+// '/addComment/:film_id'
+app.post(`${routes_js_1.routes.addComment}/:id`, (req, res) => {
+    const { body } = req;
+    const { id } = req.params;
+    (0, methods_1.logRequest)(req, `${id} requested to comment`);
+    const { _id, name, comment_text, timestamp, upvotes, downvotes } = body;
+    (0, conn_js_1.default)()
+        .then((database) => __awaiter(void 0, void 0, void 0, function* () {
+        const collection = yield (0, methods_1.getCollection)(res, database);
+        if (collection === null)
+            return;
+        const commentToAdd = {
+            _id,
+            name,
+            comment_text,
+            timestamp,
+            upvotes,
+            downvotes,
+        };
+        collection
+            .findOneAndUpdate({ film_id: parseFloat(id) }, { $push: { comments: commentToAdd } })
+            .then(() => res.status(201).send('Successfully added comment'))
+            .catch((err) => (0, methods_1.apiError)(err, res));
+    }))
+        .catch((err) => (0, methods_1.apiError)(err, res));
+});
+// '/upvote/:film_id/comment_id'
+app.get(`${routes_js_1.routes.upvote}/:id/:commentId`, (req, res) => {
+    const { id, commentId } = req.params;
+    (0, methods_1.logRequest)(req, `${id} requested to upvote ${commentId}`);
+    const params = { filmId: parseFloat(id), commentId: parseFloat(commentId) };
+    (0, conn_js_1.default)()
+        .then((database) => __awaiter(void 0, void 0, void 0, function* () {
+        const collection = (0, methods_1.getCollection)(res, database);
+        if (collection === null)
+            return;
+        (0, methods_1.updateCommentVote)(collection, 'upvote', res, params);
+    }))
+        .catch((err) => (0, methods_1.apiError)(err, res));
+});
+// '/downvote/:film_id/:comment_id'
+app.get(`${routes_js_1.routes.downvote}/:id/:commentId`, (req, res) => {
+    const { id, commentId } = req.params;
+    (0, methods_1.logRequest)(req, `${id} requested to downvote ${commentId}`);
+    const params = { filmId: parseFloat(id), commentId: parseFloat(commentId) };
+    (0, conn_js_1.default)()
+        .then((database) => __awaiter(void 0, void 0, void 0, function* () {
+        const collection = yield (0, methods_1.getCollection)(res, database);
+        if (collection === null)
+            return;
+        (0, methods_1.updateCommentVote)(collection, 'downvote', res, params);
+    }))
+        .catch((err) => (0, methods_1.apiError)(err, res));
+});
+// Related films endpoint
+// '/related/:id'
+app.get('/related/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    (0, methods_1.logRequest)(req, `${id} requested related films`);
+    (0, conn_js_1.default)()
+        .then((database) => __awaiter(void 0, void 0, void 0, function* () {
+        const collection = yield (0, methods_1.getCollection)(res, database);
+        if (collection === null)
+            return;
+        const relatedFilms = yield (0, methods_1.getRelatedFilms)(collection, id);
+        if (relatedFilms === undefined) {
+            res.status(404).send(`Unable to find related films for ${id}`);
+            console.log(`Cannot find related films for ${id}`);
+        }
+        res.status(200).send(relatedFilms);
+        return;
+    }))
+        .catch((err) => (0, methods_1.apiError)(err, res));
+}));
 app.listen(PORT, () => console.log('Server running at port', PORT));

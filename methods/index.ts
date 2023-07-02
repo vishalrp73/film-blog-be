@@ -3,6 +3,9 @@ import { getCollection } from './collection';
 import { apiError } from './apiError';
 import { sanitizeTerm } from './sanitizeTerm';
 import { transformUppercase } from './transformUppercase';
+import { updateCommentVote } from './updateComment';
+import { randomiseFilms } from './randomiseFilms';
+import { getRelatedFilms } from './getRelatedFilms';
 
 export {
   logRequest,
@@ -10,4 +13,7 @@ export {
   apiError,
   sanitizeTerm,
   transformUppercase,
+  updateCommentVote,
+  randomiseFilms,
+  getRelatedFilms,
 };

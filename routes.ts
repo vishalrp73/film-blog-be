@@ -5,4 +5,7 @@ export const routes = {
   artists: '/artists',
   categories: '/categories',
   topFive: '/topFive',
+  addComment: '/addComment',
+  upvote: '/upvote',
+  downvote: '/downvote',
 };
