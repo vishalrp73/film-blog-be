@@ -128,7 +128,74 @@ app.get(`${routes_js_1.routes.genres}/:genre`, (req, res) => {
         .catch((err) => (0, methods_1.apiError)(err, res));
 });
 // Artists endpoints
-// '/artists/:artist'
+// '/artists'
+// app.get(`${routes.artists}`, (req: Request, res: Response) => {
+//   logRequest(req, 'All artists requested');
+//   db()
+//     .then(async (database) => {
+//       const collection = getCollection(res, database);
+//       if (collection === null) return;
+//       const films = await collection.find({}).toArray();
+//       const artists = [
+//         ...new Set(
+//           films.flatMap(
+//             ({
+//               director,
+//               writers,
+//               cinematography,
+//               soundtrack,
+//               notable_actors,
+//             }) => [
+//               director,
+//               ...writers,
+//               ...cinematography,
+//               ...soundtrack,
+//               ...notable_actors,
+//             ],
+//           ),
+//         ),
+//       ];
+//       if (artists.length > 0) {
+//         res.send(artists).status(200);
+//         return;
+//       }
+//       res.send('Unable to find any artists').status(404);
+//     })
+//     .catch((err) => apiError(err, res));
+// });
+// mock test - getting artists and having them sorted by role
+// app.get(`${routes.artists}`, (req: Request, res: Response) => {
+//   console.log('hit mock endpoint');
+//   const directors = mockDb.map(({ director }) => director);
+//   const writers = mockDb.flatMap(({ writers }) =>
+//     writers.map((writer) => writer),
+//   );
+//   const cinematography = mockDb.flatMap(({ cinematography }) =>
+//     cinematography.map((cinematographer) => cinematographer),
+//   );
+//   const soundtrack = mockDb.flatMap(({ soundtrack }) =>
+//     soundtrack.map((musician) => musician),
+//   );
+//   const actors = mockDb.flatMap(({ notable_actors }) =>
+//     notable_actors.map((actor) => actor),
+//   );
+//   type Artists = {
+//     directors: string[];
+//     writers: string[];
+//     cinematography: string[];
+//     soundtrack: string[];
+//     actors: string[];
+//   };
+//   const artists: Artists = {
+//     directors,
+//     writers,
+//     cinematography,
+//     soundtrack,
+//     actors,
+//   };
+//   res.send(artists).status(200);
+// });
+// rebuilt
 app.get(`${routes_js_1.routes.artists}`, (req, res) => {
     (0, methods_1.logRequest)(req, 'All artists requested');
     (0, conn_js_1.default)()
@@ -137,16 +204,27 @@ app.get(`${routes_js_1.routes.artists}`, (req, res) => {
         if (collection === null)
             return;
         const films = yield collection.find({}).toArray();
-        const artists = [
-            ...new Set(films.flatMap(({ director, writers, cinematography, soundtrack, notable_actors, }) => [
-                director,
-                ...writers,
-                ...cinematography,
-                ...soundtrack,
-                ...notable_actors,
-            ])),
+        const directors = [...new Set(films.map(({ director }) => director))];
+        const writers = [
+            ...new Set(films.flatMap(({ writers }) => writers.map((writer) => writer))),
         ];
-        if (artists.length > 0) {
+        const cinematographers = [
+            ...new Set(films.flatMap(({ cinematography }) => cinematography.map((cinematographer) => cinematographer))),
+        ];
+        const musicians = [
+            ...new Set(films.flatMap(({ soundtrack }) => soundtrack.map((musician) => musician))),
+        ];
+        const actors = [
+            ...new Set(films.flatMap(({ notable_actors }) => notable_actors.map((actor) => actor))),
+        ];
+        const artists = {
+            directors,
+            writers,
+            cinematographers,
+            musicians,
+            actors,
+        };
+        if (artists) {
             res.send(artists).status(200);
             return;
         }

@@ -1,8 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 const dotenv = require('dotenv').config();
 const cors = require('cors');
-import { Comment } from './types.js';
+import { Artists, Comment } from './types.js';
 import db from './server/db/conn.js';
+import mockDb from './mock/films.json';
 import { routes } from './routes.js';
 import {
   logRequest,
@@ -142,7 +143,7 @@ app.get(`${routes.genres}/:genre`, (req: Request, res: Response) => {
 });
 
 // Artists endpoints
-// '/artists/:artist'
+// '/artists'
 app.get(`${routes.artists}`, (req: Request, res: Response) => {
   logRequest(req, 'All artists requested');
   db()
@@ -151,27 +152,43 @@ app.get(`${routes.artists}`, (req: Request, res: Response) => {
       if (collection === null) return;
 
       const films = await collection.find({}).toArray();
-      const artists = [
+      const directors = [...new Set(films.map(({ director }) => director))];
+      const writers = [
         ...new Set(
-          films.flatMap(
-            ({
-              director,
-              writers,
-              cinematography,
-              soundtrack,
-              notable_actors,
-            }) => [
-              director,
-              ...writers,
-              ...cinematography,
-              ...soundtrack,
-              ...notable_actors,
-            ],
+          films.flatMap(({ writers }) => writers.map((writer) => writer)),
+        ),
+      ];
+      const cinematographers = [
+        ...new Set(
+          films.flatMap(({ cinematography }) =>
+            cinematography.map((cinematographer) => cinematographer),
+          ),
+        ),
+      ];
+      const musicians = [
+        ...new Set(
+          films.flatMap(({ soundtrack }) =>
+            soundtrack.map((musician) => musician),
+          ),
+        ),
+      ];
+      const actors = [
+        ...new Set(
+          films.flatMap(({ notable_actors }) =>
+            notable_actors.map((actor) => actor),
           ),
         ),
       ];
 
-      if (artists.length > 0) {
+      const artists: Artists = {
+        directors,
+        writers,
+        cinematographers,
+        musicians,
+        actors,
+      };
+
+      if (artists) {
         res.send(artists).status(200);
         return;
       }

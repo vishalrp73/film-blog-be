@@ -35,3 +35,11 @@ export interface Film {
 }
 
 export type MongoFilm = WithId<Document> & Film;
+
+export type Artists = {
+  directors: string[];
+  writers: string[];
+  cinematographers: string[];
+  musicians: string[];
+  actors: string[];
+};
